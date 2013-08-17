@@ -112,3 +112,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Set things up for FEniCS
+source /home/aaron/FEniCS/FEniCS/share/fenics/fenics.conf
