@@ -14,10 +14,10 @@ set spell			"turns on spell checker
 
 "Note/: it would probably be cooler to set up an install script so I could put these python commands in 
 "	a ~/.vim/ftplugin/python.vim file ( http://henry.precheur.org/vim/python.html ) 
-AutoCmd BufNewFile,BufRead *.py	"sets up environment for python
-    \ setlocal tabstop=4	"sets tab stop to 4 spaces
-    \ setlocal softtabstop=4	"sets soft tab stop to 4 spaces
-    \ setlocal shiftwidth=4	"change number of spaces characters inserted for indentation
-    \ setlocal textwidth=80	"set text wrapping
-    \ setlocal smarttab		"if you are indented stay indented
-    \ setlocal expandtab	"insert space character instead of tab 
+autocmd FileType python \	"sets up environment for python
+    \ set tabstop=4		"sets tab stop to 4 spaces
+    \ set softtabstop=4		"sets soft tab stop to 4 spaces
+    \ set shiftwidth=4		"change number of spaces characters inserted for indentation
+    \ set textwidth=80		"set text wrapping
+    \ set smarttab 	     	"if you are indented stay indented
+    \ set expandtab		"insert space character instead of tab 
