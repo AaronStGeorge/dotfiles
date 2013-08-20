@@ -13,6 +13,9 @@ set wildmenu 			"return list after second tab hit if there are multiple tab comp
 
 "Note/: it would probably be cooler to set up an install script so I could put these python commands in 
 "	a ~/.vim/ftplugin/python.vim file ( http://henry.precheur.org/vim/python.html ) 
-autocmd FileType python set tabstop=4|set softtabstop=4|set shiftwidth=4|set textwidth=80|set smarttab|set expandtab|set spell
+autocmd FileType python set tabstop=4|set softtabstop=4|set shiftwidth=4|set textwidth=80|set smarttab|set expandtab
 
-colorscheme molokai      	 " set colorscheme
+colorscheme molokai
+set t_Co=256
+set syntax
+hi Visual term=reverse ctermbg=6 guibg=DarkCyan
