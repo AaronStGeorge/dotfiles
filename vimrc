@@ -9,6 +9,8 @@ set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 
 set smarttab  	                "smart tabbing - ex. automatic tab in for loop
 
+set colorcolumn=81		"set a vertical line at 8o characters"
+
 filetype plugin indent on
 
 syntax on
