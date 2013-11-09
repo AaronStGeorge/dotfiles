@@ -1,4 +1,5 @@
 set nu				"adds line numbers
+set mouse=a			"use mouse in all modes
 
 set incsearch 			"incremental searching
 
