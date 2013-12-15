@@ -1,24 +1,23 @@
+set nocompatible		"sets compatible mode to off
 set nu				"adds line numbers
 set mouse=a			"use mouse in all modes
+set scrolloff=2 		"keep at least 2 lines around your cursor at all times
+set smarttab  	                "smart tabbing - ex. automatic tab in for loop
 
+
+"==== searching
 set incsearch 			"incremental searching
-
 set ignorecase 			"ignores case when searching
 set smartcase  			"only ignore case when search is only lower case letters
 
-set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 
-set smarttab  	                "smart tabbing - ex. automatic tab in for loop
-
-set colorcolumn=81		"set a vertical line at 8o characters"
-
-filetype plugin indent on
-
+"==== plugins
+filetype plugin on		"allow language specific options in separate files
 syntax on
+execute pathogen#infect()
 
-set wildmode=longest,list,full  "set bash like tab completion
-set wildmenu        			"return list after second tab hit if there are multiple tab completes available 
 
+"==== color scheme
 colorscheme molokai
 set t_Co=256
 hi Visual term=reverse ctermbg=6 guibg=DarkCyan
