@@ -15,7 +15,7 @@ set smartcase  			"only ignore case when search is only lower case letters
 filetype plugin on		"allow language specific options in separate files
 syntax on
 execute pathogen#infect()
-map <F9> :NERDTreeToggle<CR>	"maps NERTgreeToggle to F2
+map <F9> :NERDTreeToggle<CR>	"maps NERTgreeToggle to F9
 
 
 "==== color scheme
