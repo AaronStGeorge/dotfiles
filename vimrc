@@ -39,6 +39,7 @@ map <F9> :NERDTreeToggle<CR>	"maps NERTgreeToggle to F9
 let g:syntastic_mode_map = { 'mode': 'active',
 			   \ 'active_filetypes': [],
 			   \ 'passive_filetypes': ['html'] }
+let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 
 "==== color scheme
 syntax enable
@@ -47,12 +48,12 @@ colorscheme solarized
 
 
 "==== miscellaneous
-set nu				"adds line numbers
-set mouse=a			"use mouse in all modes
-set scrolloff=2 		"keep at least 2 lines around your cursor at all times
-set smarttab  	                "smart tabbing - ex. automatic tab in for loop
-set clipboard=unnamed           " use the system clipboard
-set laststatus=2                " always show status bar
+set nu								"adds line numbers
+set mouse=a							"use mouse in all modes
+set scrolloff=2 					"keep at least 2 lines around your cursor at all times
+set smarttab  	               "smart tabbing - ex. automatic tab in for loop
+set clipboard=unnamed         " use the system clipboard
+set laststatus=2              " always show status bar
 " highlight the status bar when in insert mode
 highlight StatusLine   ctermbg=254 ctermfg=235
 if version >= 700
