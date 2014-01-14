@@ -32,7 +32,11 @@ filetype plugin indent on	"allow language specific options in separate files
 
 
 "==== map keys
-map <F9> :NERDTreeToggle<CR>	"maps NERTgreeToggle to F9
+"map F9 to toggle NERDTree in directory of file in current buffer
+map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
+"remap :tabnew to open NERDTree as well as new tab
+cabbrev tabnew :tabnew<CR>:NERDTree<CR>
+map <C-t> :tabnew<CR>	"map C-t to :tabnew
 
 
 "==== Syntastic Setup
@@ -55,6 +59,7 @@ set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
 let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
+let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 " highlight the status bar when in insert mode
 highlight StatusLine   ctermbg=254 ctermfg=235
 if version >= 700
