@@ -21,6 +21,8 @@ Bundle 'Syntastic'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'ervandew/supertab'
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
 	echo ""
@@ -37,6 +39,7 @@ map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
 "remap :tabnew to open NERDTree as well as new tab
 cabbrev tabnew :tabnew<CR>:NERDTree<CR>
 map <C-t> :tabnew<CR>	"map C-t to :tabnew
+let mapleader="\<space>"
 
 
 "==== Syntastic Setup
@@ -60,6 +63,8 @@ set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
 let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
 let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
+"scroll down in SuperTab
+let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
 highlight StatusLine   ctermbg=254 ctermfg=235
 if version >= 700
