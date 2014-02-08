@@ -16,13 +16,13 @@ endif
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
-"Add your bundles here
 Bundle 'Syntastic' 
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'ervandew/supertab'
+Bundle 'tpope/vim-fugitive'
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
 	echo ""
@@ -52,7 +52,6 @@ let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 syntax enable
 set background=dark
 colorscheme solarized
-
 
 "==== miscellaneous
 set nu				"adds line numbers
