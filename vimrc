@@ -60,8 +60,6 @@ set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
-let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
-let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
@@ -70,6 +68,15 @@ if version >= 700
 	au InsertEnter * hi StatusLine ctermfg=33  ctermbg=254
 	au InsertLeave * hi StatusLine ctermbg=254  ctermfg=235
 endif
+" Source the vimrc file after saving it
+if has("autocmd")
+	autocmd bufwritepost vimrc source $MYVIMRC
+endif
+
+
+"==== NERDTree stuff
+let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
+let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 
 
 "==== searching
