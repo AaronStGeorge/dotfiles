@@ -23,6 +23,12 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
+"JavaScript
+Bundle 'nathanaelkane/vim-indent-guides'
+Bundle 'jelera/vim-javascript-syntax'
+Bundle 'pangloss/vim-javascript'
+Bundle 'nathanaelkane/vim-indent-guides'
+Bundle 'Raimondi/delimitMate'
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
 	echo ""
@@ -40,6 +46,8 @@ map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
 cabbrev tabnew :tabnew<CR>:NERDTree<CR>
 map <C-t> :tabnew<CR>	"map C-t to :tabnew
 let mapleader="\<space>"
+map <C-j> <C-W>h
+map <C-k> <C-W>l
 
 
 "==== Syntastic Setup
@@ -48,10 +56,12 @@ let g:syntastic_mode_map = { 'mode': 'active',
 			   \ 'passive_filetypes': ['html'] }
 let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 
+
 "==== color scheme
 syntax enable
 set background=dark
 colorscheme solarized
+
 
 "==== miscellaneous
 set nu				"adds line numbers
