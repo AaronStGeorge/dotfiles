@@ -39,6 +39,13 @@ endif
 filetype plugin indent on	"allow language specific options in separate files
 
 
+"==== restore cursor position
+autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+
 "==== map keys
 "map F9 to toggle NERDTree in directory of file in current buffer
 map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
@@ -55,6 +62,7 @@ let g:syntastic_mode_map = { 'mode': 'active',
 			   \ 'active_filetypes': [],
 			   \ 'passive_filetypes': ['html'] }
 let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
+let g:syntastic_ruby_checkers=['mri']
 
 
 "==== color scheme
