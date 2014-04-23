@@ -16,13 +16,17 @@ endif
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
-Bundle 'Syntastic' 
+Bundle 'scrooloose/syntastic' 
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'davidhalter/jedi-vim'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
+"python
+Bundle 'davidhalter/jedi-vim'
+"Racket
+Bundle 'wlangstroth/vim-racket'
+Bundle 'kien/rainbow_parentheses.vim'
 "JavaScript
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'jelera/vim-javascript-syntax'
@@ -63,6 +67,7 @@ let g:syntastic_mode_map = { 'mode': 'active',
 			   \ 'passive_filetypes': ['html'] }
 let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 let g:syntastic_ruby_checkers=['mri']
+let g:syntastic_racket_checkers=['racket']
 
 
 "==== color scheme
