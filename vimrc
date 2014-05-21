@@ -22,17 +22,15 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
+Bundle 'Raimondi/delimitMate'
 "python
 Bundle 'davidhalter/jedi-vim'
-"Racket
-Bundle 'wlangstroth/vim-racket'
-Bundle 'kien/rainbow_parentheses.vim'
 "JavaScript
-Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'jelera/vim-javascript-syntax'
-Bundle 'pangloss/vim-javascript'
-Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'Raimondi/delimitMate'
+Bundle "pangloss/vim-javascript"
+Bundle 'maksimr/vim-jsbeautify'
+Bundle 'einars/js-beautify'
+
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
 	echo ""
@@ -48,6 +46,14 @@ autocmd BufReadPost *
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
     \ endif
+
+
+"==== js-beautify stuff
+autocmd FileType javascript noremap <buffer>  <C-f> :call JsBeautify()<cr>
+" for html
+autocmd FileType html noremap <buffer> <C-f> :call HtmlBeautify()<cr>
+" for css or scss
+autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 
 
 "==== map keys
@@ -67,7 +73,8 @@ let g:syntastic_mode_map = { 'mode': 'active',
 			   \ 'passive_filetypes': ['html'] }
 let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 let g:syntastic_ruby_checkers=['mri']
-let g:syntastic_racket_checkers=['racket']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_error_signs = 1
 
 
 "==== color scheme
@@ -83,6 +90,7 @@ set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
+set colorcolumn=81              "set a vertical line at 80 characters"
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
