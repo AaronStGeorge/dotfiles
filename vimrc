@@ -22,9 +22,6 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
-Bundle 'Raimondi/delimitMate'
-"python
-Bundle 'davidhalter/jedi-vim'
 "JavaScript
 Bundle 'jelera/vim-javascript-syntax'
 Bundle "pangloss/vim-javascript"
@@ -90,7 +87,6 @@ set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
-set colorcolumn=81              "set a vertical line at 80 characters"
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
