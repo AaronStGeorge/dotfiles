@@ -28,6 +28,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'maksimr/vim-jsbeautify'
 Bundle 'einars/js-beautify'
 "Go
+Bundle 'jnwhiteh/vim-golang'
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
