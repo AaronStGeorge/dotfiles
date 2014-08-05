@@ -24,9 +24,10 @@ Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
 "JavaScript
 Bundle 'jelera/vim-javascript-syntax'
-Bundle "pangloss/vim-javascript"
+Bundle 'pangloss/vim-javascript'
 Bundle 'maksimr/vim-jsbeautify'
 Bundle 'einars/js-beautify'
+"Go
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
