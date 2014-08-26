@@ -22,6 +22,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
+Bundle 'christoomey/vim-tmux-navigator'
 "JavaScript
 Bundle 'jelera/vim-javascript-syntax'
 Bundle 'pangloss/vim-javascript'
@@ -101,7 +102,15 @@ endif
 if has("autocmd")
 	autocmd bufwritepost vimrc source $MYVIMRC
 endif
-
+"gofmt Go source files when they are saved
+autocmd FileType go autocmd BufWritePre <buffer> Fmt
+"key mappings for easy navigation between splits
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+" Set this to the name of your terminal that supports mouse codes.
+set ttymouse=xterm2
 
 "==== NERDTree stuff
 let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
