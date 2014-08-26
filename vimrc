@@ -59,12 +59,12 @@ autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 "==== map keys
 "map F9 to toggle NERDTree in directory of file in current buffer
 map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
+"map F10 to SyntasticToggleMode
+map <F10>  :execute 'SyntasticToggleMode'<CR>
 "remap :tabnew to open NERDTree as well as new tab
 cabbrev tabnew :tabnew<CR>:NERDTree<CR>
 map <C-t> :tabnew<CR>	"map C-t to :tabnew
 let mapleader="\<space>"
-map <C-j> <C-W>h
-map <C-k> <C-W>l
 
 
 "==== Syntastic Setup
@@ -90,6 +90,7 @@ set scrolloff=2 		"keep at least 2 lines around your cursor at all times
 set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
+set backspace=indent,eol,start  "allows backspace to consume anything
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
@@ -111,6 +112,7 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 " Set this to the name of your terminal that supports mouse codes.
 set ttymouse=xterm2
+
 
 "==== NERDTree stuff
 let NERDTreeShowBookmarks=1	"always show bookmarks in NERDTree
