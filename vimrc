@@ -28,6 +28,8 @@ Bundle 'jelera/vim-javascript-syntax'
 Bundle 'pangloss/vim-javascript'
 Bundle 'maksimr/vim-jsbeautify'
 Bundle 'einars/js-beautify'
+"Python
+Bundle 'alfredodeza/pytest.vim'
 "Go
 Bundle 'jnwhiteh/vim-golang'
 
@@ -65,6 +67,13 @@ map <F10>  :execute 'SyntasticToggleMode'<CR>
 cabbrev tabnew :tabnew<CR>:NERDTree<CR>
 map <C-t> :tabnew<CR>	"map C-t to :tabnew
 let mapleader="\<space>"
+"pytest
+nmap <silent><Leader>f <Esc>:Pytest file<CR>
+nmap <silent><Leader>c <Esc>:Pytest class<CR>
+nmap <silent><Leader>m <Esc>:Pytest method<CR>
+nmap <silent><Leader>F <Esc>:Pytest file verbose<CR>
+nmap <silent><Leader>C <Esc>:Pytest class verbose<CR>
+nmap <silent><Leader>M <Esc>:Pytest method verbose<CR>
 
 
 "==== Syntastic Setup
@@ -110,8 +119,10 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-" Set this to the name of your terminal that supports mouse codes.
+" Set this to the name of your terminal (term should supports mouse codes)
 set ttymouse=xterm2
+"statasline will now have filepath and filetype
+set statusline=%f\ -\ FileType:\ %y
 
 
 "==== NERDTree stuff
