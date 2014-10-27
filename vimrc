@@ -23,6 +23,8 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
 Bundle 'christoomey/vim-tmux-navigator'
+Bundle 'bling/vim-airline'
+Bundle 'edkolev/tmuxline.vim'
 "JavaScript
 Bundle 'jelera/vim-javascript-syntax'
 Bundle 'pangloss/vim-javascript'
@@ -31,7 +33,7 @@ Bundle 'einars/js-beautify'
 "Python
 Bundle 'alfredodeza/pytest.vim'
 "Go
-Bundle 'jnwhiteh/vim-golang'
+Bundle 'fatih/vim-go'
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
@@ -41,6 +43,14 @@ endif
 " Setting up Vundle - the vim plugin bundler end
 
 filetype plugin indent on	"allow language specific options in separate files
+
+
+let g:tmuxline_separators = {
+    \ 'left' : '',
+    \ 'left_alt': '>',
+    \ 'right' : '',
+    \ 'right_alt' : '<',
+    \ 'space' : ' '}
 
 
 "==== restore cursor position
@@ -77,9 +87,7 @@ nmap <silent><Leader>M <Esc>:Pytest method verbose<CR>
 
 
 "==== Syntastic Setup
-let g:syntastic_mode_map = { 'mode': 'active',
-			   \ 'active_filetypes': [],
-			   \ 'passive_filetypes': ['html'] }
+let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [],'passive_filetypes': ['html'] }
 let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 let g:syntastic_ruby_checkers=['mri']
 let g:syntastic_always_populate_loc_list = 1
@@ -90,6 +98,7 @@ let g:syntastic_error_signs = 1
 syntax enable
 set background=dark
 colorscheme solarized
+call togglebg#map("<F5>")
 
 
 "==== miscellaneous
@@ -100,20 +109,19 @@ set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
 set backspace=indent,eol,start  "allows backspace to consume anything
+set timeoutlen=50
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
-highlight StatusLine   ctermbg=254 ctermfg=235
-if version >= 700
-	au InsertEnter * hi StatusLine ctermfg=33  ctermbg=254
-	au InsertLeave * hi StatusLine ctermbg=254  ctermfg=235
-endif
+"highlight StatusLine   ctermbg=254 ctermfg=235
+"if version >= 700
+"	au InsertEnter * hi StatusLine ctermfg=33  ctermbg=254
+"	au InsertLeave * hi StatusLine ctermbg=254  ctermfg=235
+"endif
 " Source the vimrc file after saving it
 if has("autocmd")
 	autocmd bufwritepost vimrc source $MYVIMRC
 endif
-"gofmt Go source files when they are saved
-autocmd FileType go autocmd BufWritePre <buffer> Fmt
 "key mappings for easy navigation between splits
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -121,8 +129,8 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 " Set this to the name of your terminal (term should supports mouse codes)
 set ttymouse=xterm2
-"statasline will now have filepath and filetype
-set statusline=%f\ -\ FileType:\ %y
+""statasline will now have filepath and filetype
+"set statusline=%f\ -\ FileType:\ %y
 
 
 "==== NERDTree stuff
@@ -134,3 +142,24 @@ let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 set incsearch 			"incremental searching
 set ignorecase 			"ignores case when searching
 set smartcase  			"only ignore case when search is only lower case letters
+
+
+"==== functions
+"if tabstop is 2 set it to 4 and update statusline, and vice versa
+if !exists("*SetTabstop")
+	function SetTabstop()
+		if &ts == 2
+		    setlocal tabstop=4
+		    setlocal shiftwidth=4
+		    setlocal softtabstop=4
+		    setlocal statusline=%f\ -\ FileType:\ %y\ -\ Tab=4
+		    setlocal expandtab
+		  else
+		    setlocal tabstop=2
+		    setlocal shiftwidth=2
+		    setlocal softtabstop=2
+		    setlocal statusline=%f\ -\ FileType:\ %y\ -\ Tab=2
+		    setlocal expandtab
+		  endif
+		endfunction
+endif
