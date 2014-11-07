@@ -1,4 +1,4 @@
-"==== set up Vundle and plugins 
+"==== set up Vundle and plugins
 set nocompatible              " be iMproved
 filetype off                  " required for initializing Vundle
 
@@ -16,10 +16,9 @@ endif
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
-Bundle 'scrooloose/syntastic' 
+Bundle 'scrooloose/syntastic'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdtree'
-Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-fugitive'
 Bundle 'christoomey/vim-tmux-navigator'
@@ -42,16 +41,14 @@ if iCanHazVundle == 0
 endif
 " Setting up Vundle - the vim plugin bundler end
 
-filetype plugin indent on	"allow language specific options in separate files
+filetype plugin on	"allow language specific options in separate files
+filetype indent on	"allow language specific options in separate files
 
-
-let g:tmuxline_separators = {
-    \ 'left' : '',
-    \ 'left_alt': '>',
-    \ 'right' : '',
-    \ 'right_alt' : '<',
-    \ 'space' : ' '}
-
+"vim-airline"
+let g:airline#extensions#tabline#enabled = 0
+let g:airline_powerline_fonts = 1
+let g:airline_section_y = ""
+let g:airline_section_x = ""
 
 "==== restore cursor position
 autocmd BufReadPost *
@@ -76,7 +73,8 @@ map <F10>  :execute 'SyntasticToggleMode'<CR>
 "remap :tabnew to open NERDTree as well as new tab
 cabbrev tabnew :tabnew<CR>:NERDTree<CR>
 map <C-t> :tabnew<CR>	"map C-t to :tabnew
-let mapleader="\<space>"
+let mapleader = "\<Space>"
+
 "pytest
 nmap <silent><Leader>f <Esc>:Pytest file<CR>
 nmap <silent><Leader>c <Esc>:Pytest class<CR>
@@ -146,20 +144,19 @@ set smartcase  			"only ignore case when search is only lower case letters
 
 "==== functions
 "if tabstop is 2 set it to 4 and update statusline, and vice versa
-if !exists("*SetTabstop")
-	function SetTabstop()
-		if &ts == 2
-		    setlocal tabstop=4
-		    setlocal shiftwidth=4
-		    setlocal softtabstop=4
-		    setlocal statusline=%f\ -\ FileType:\ %y\ -\ Tab=4
-		    setlocal expandtab
-		  else
-		    setlocal tabstop=2
-		    setlocal shiftwidth=2
-		    setlocal softtabstop=2
-		    setlocal statusline=%f\ -\ FileType:\ %y\ -\ Tab=2
-		    setlocal expandtab
-		  endif
-		endfunction
-endif
+function! SetTabstop()
+	if &ts == 2
+		setlocal tabstop=4
+		setlocal shiftwidth=4
+		setlocal softtabstop=4
+		setlocal expandtab
+		let g:airline_section_y = "tab=4"
+	else
+		setlocal tabstop=2
+		setlocal shiftwidth=2
+		setlocal softtabstop=2
+		setlocal expandtab
+		let g:airline_section_y = "tab=2"
+	endif
+	AirlineRefresh
+endfunction
