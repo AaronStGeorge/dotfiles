@@ -32,7 +32,7 @@ Bundle 'einars/js-beautify'
 "Python
 Bundle 'alfredodeza/pytest.vim'
 "Go
-Bundle 'fatih/vim-go'
+"Bundle 'fatih/vim-go'
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
@@ -44,11 +44,25 @@ endif
 filetype plugin on	"allow language specific options in separate files
 filetype indent on	"allow language specific options in separate files
 
+
+Bundle 'Lokaltog/vim-easymotion'
+"==== map keys
+"map F9 to toggle NERDTree in directory of file in current buffer
+map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
+"map F10 to SyntasticToggleMode
+map <F10>  :execute 'SyntasticToggleMode'<CR>
+"remap :tabnew to open NERDTree as well as new tab
+cabbrev tabnew :tabnew<CR>:NERDTree<CR>
+map <C-t> :tabnew<CR>	"map C-t to :tabnew
+let mapleader = "\<space>"
+
+
 "vim-airline"
 let g:airline#extensions#tabline#enabled = 0
 let g:airline_powerline_fonts = 1
 let g:airline_section_y = ""
 let g:airline_section_x = ""
+
 
 "==== restore cursor position
 autocmd BufReadPost *
@@ -64,16 +78,6 @@ autocmd FileType html noremap <buffer> <C-f> :call HtmlBeautify()<cr>
 " for css or scss
 autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 
-
-"==== map keys
-"map F9 to toggle NERDTree in directory of file in current buffer
-map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
-"map F10 to SyntasticToggleMode
-map <F10>  :execute 'SyntasticToggleMode'<CR>
-"remap :tabnew to open NERDTree as well as new tab
-cabbrev tabnew :tabnew<CR>:NERDTree<CR>
-map <C-t> :tabnew<CR>	"map C-t to :tabnew
-let mapleader = "\<Space>"
 
 "pytest
 nmap <silent><Leader>f <Esc>:Pytest file<CR>
@@ -107,7 +111,7 @@ set smarttab  	               	"smart tabbing - ex. automatic tab in for loop
 set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
 set backspace=indent,eol,start  "allows backspace to consume anything
-set timeoutlen=50
+set timeoutlen=200
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
