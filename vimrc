@@ -90,7 +90,7 @@ nmap <silent><Leader>M <Esc>:Pytest method verbose<CR>
 
 "==== Syntastic Setup
 let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [],'passive_filetypes': ['html'] }
-let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
+"let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 let g:syntastic_ruby_checkers=['mri']
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_error_signs = 1
@@ -131,8 +131,8 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 " Set this to the name of your terminal (term should supports mouse codes)
 set ttymouse=xterm2
-""statasline will now have filepath and filetype
-"set statusline=%f\ -\ FileType:\ %y
+" Remove trailing whitespace on save
+autocmd FileType python autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 
 "==== NERDTree stuff
@@ -144,6 +144,9 @@ let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 set incsearch 			"incremental searching
 set ignorecase 			"ignores case when searching
 set smartcase  			"only ignore case when search is only lower case letters
+set hlsearch 			"highlight searches
+"press return to temporarily get out of the highlighted search
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 
 "==== functions
