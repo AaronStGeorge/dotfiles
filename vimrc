@@ -72,9 +72,12 @@ let mapleader = "\<space>"
 
 "vim-airline"
 let g:airline#extensions#tabline#enabled = 0
-let g:airline_powerline_fonts = 1
 let g:airline_section_y = ""
 let g:airline_section_x = ""
+" Don't show seperators
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:tmuxline_powerline_separators = 0
 
 
 "==== restore cursor position
