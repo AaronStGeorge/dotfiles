@@ -19,7 +19,7 @@ Bundle 'gmarik/vundle'
 Bundle 'scrooloose/syntastic'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdtree'
-" Bundle 'ervandew/supertab'
+Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'christoomey/vim-tmux-navigator'
 Bundle 'bling/vim-airline'
@@ -33,7 +33,7 @@ Bundle 'einars/js-beautify'
 "Python
 Bundle 'alfredodeza/pytest.vim'
 "Go
-"Bundle 'fatih/vim-go'
+Bundle 'fatih/vim-go'
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
@@ -58,7 +58,6 @@ function! s:check_back_space() "{{{
 endfunction"}}}
 
 
-Bundle 'Lokaltog/vim-easymotion'
 "==== map keys
 "map F9 to toggle NERDTree in directory of file in current buffer
 map <F9>  :execute '  NERDTreeToggle' . expand('%:p:h') <CR>
@@ -106,7 +105,7 @@ nmap <silent><Leader>M <Esc>:Pytest method verbose<CR>
 
 "==== Syntastic Setup
 let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [],'passive_filetypes': ['html'] }
-"let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
+let g:syntastic_python_checkers=['pyflakes']	"set python cheker to pyflakes
 let g:syntastic_ruby_checkers=['mri']
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_error_signs = 1
@@ -116,7 +115,6 @@ let g:syntastic_error_signs = 1
 syntax enable
 set background=dark
 colorscheme solarized
-call togglebg#map("<F5>")
 
 
 "==== miscellaneous
