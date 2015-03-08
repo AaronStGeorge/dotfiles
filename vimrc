@@ -27,6 +27,7 @@ Bundle 'edkolev/tmuxline.vim'
 Bundle 'Shougo/neocomplete.vim'
 "HTML
 Bundle 'mattn/emmet-vim'
+Bundle 'vim-scripts/closetag.vim'
 "JavaScript
 Bundle 'jelera/vim-javascript-syntax'
 Bundle 'pangloss/vim-javascript'
