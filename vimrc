@@ -92,9 +92,6 @@ autocmd BufReadPost *
 "==== js-beautify stuff
 autocmd FileType javascript noremap <buffer>  <C-f> :call JsBeautify()<cr>
 autocmd FileType javascript autocmd BufWritePre <buffer> :call JsBeautify()
-" for html
-autocmd FileType html noremap <buffer> <C-f> :call HtmlBeautify()<cr>
-autocmd FileType html autocmd BufWritePre <buffer> :call HtmlBeautify()
 " for css or scss
 autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 autocmd FileType css autocmd BufWritePre <buffer> :call CSSBeautify()
