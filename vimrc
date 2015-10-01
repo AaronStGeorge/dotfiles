@@ -25,6 +25,7 @@ Bundle 'christoomey/vim-tmux-navigator'
 Bundle 'bling/vim-airline'
 Bundle 'edkolev/tmuxline.vim'
 Bundle 'Shougo/neocomplete.vim'
+Bundle 'tpope/vim-surround'
 "HTML
 Bundle 'mattn/emmet-vim'
 Bundle 'vim-scripts/closetag.vim'
@@ -37,6 +38,14 @@ Bundle 'einars/js-beautify'
 Bundle 'alfredodeza/pytest.vim'
 "Go
 Bundle 'fatih/vim-go'
+"Rust
+Plugin 'rust-lang/rust.vim'
+"Clojure
+Plugin 'guns/vim-clojure-static'
+Plugin 'tpope/vim-fireplace'
+Plugin 'venantius/vim-cljfmt'
+Plugin 'luochen1990/rainbow'
+
 
 if iCanHazVundle == 0
 	echo "Installing Bundles, please ignore key map error messages"
@@ -97,7 +106,7 @@ autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 autocmd FileType css autocmd BufWritePre <buffer> :call CSSBeautify()
 
 
-"pytest
+"==== pytest
 nmap <silent><Leader>f <Esc>:Pytest file<CR>
 nmap <silent><Leader>c <Esc>:Pytest class<CR>
 nmap <silent><Leader>m <Esc>:Pytest method<CR>
@@ -129,6 +138,7 @@ set clipboard=unnamed         	"use the system clipboard
 set laststatus=2              	"always show status bar
 set backspace=indent,eol,start  "allows backspace to consume anything
 set timeoutlen=200
+set completeopt-=preview
 "scroll down in SuperTab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 " highlight the status bar when in insert mode
@@ -149,7 +159,15 @@ nnoremap <C-H> <C-W><C-H>
 " Set this to the name of your terminal (term should supports mouse codes)
 set ttymouse=xterm2
 " Remove trailing whitespace on save
-autocmd FileType python autocmd BufWritePre <buffer> :%s/\s\+$//e
+autocmd BufWritePre * :%s/\s\+$//e
+" Turn on rainbow_parentheses
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+" Remove trailing whitespace before write
+
+
+"==== relative numbers
+set relativenumber
+set number
 
 
 "==== NERDTree stuff
@@ -158,10 +176,10 @@ let NERDTreeQuitOnOpen=1	"quit NERDTree after file is opened
 
 
 "==== searching
-set incsearch 			"incremental searching
-set ignorecase 			"ignores case when searching
-set smartcase  			"only ignore case when search is only lower case letters
-set hlsearch 			"highlight searches
+set incsearch 	"incremental searching
+set ignorecase 	"ignores case when searching
+set smartcase	"only ignore case when search is only lower case letters
+set hlsearch 	"highlight searches
 "press return to temporarily get out of the highlighted search
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
