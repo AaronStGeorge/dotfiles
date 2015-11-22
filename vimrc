@@ -81,7 +81,7 @@ map <C-t> :tabnew<CR>	"map C-t to :tabnew
 let mapleader = "\<space>"
 
 
-"vim-airline"
+"==== vim-airline
 let g:airline#extensions#tabline#enabled = 0
 let g:airline_section_y = ""
 let g:airline_section_x = ""
@@ -104,6 +104,9 @@ autocmd FileType javascript autocmd BufWritePre <buffer> :call JsBeautify()
 " for css or scss
 autocmd FileType css noremap <buffer> <C-f> :call CSSBeautify()<cr>
 autocmd FileType css autocmd BufWritePre <buffer> :call CSSBeautify()
+ " for html
+autocmd FileType html noremap <buffer> <C-f> :call HtmlBeautify()<cr>
+autocmd FileType html autocmd BufWritePre <buffer> :call HtmlBeautify()
 
 
 "==== pytest
@@ -162,7 +165,11 @@ set ttymouse=xterm2
 autocmd BufWritePre * :%s/\s\+$//e
 " Turn on rainbow_parentheses
 let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-" Remove trailing whitespace before write
+
+
+"==== vim-go stuff
+" format with goimports instead of gofmt
+let g:go_fmt_command = "goimports"
 
 
 "==== relative numbers
