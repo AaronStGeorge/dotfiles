@@ -1,10 +1,7 @@
 # prompt ======================================================================
 
-parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
-
-export PS1_BASE="\\w:\e[31m\$(parse_git_branch)\e[39m"
+# Assumes https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh is installed.
+export PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
 export PS1_PROMPT=" 🐑💨 "
 
 export PS1="$PS1_BASE$PS1_PROMPT"
