@@ -8,7 +8,6 @@ export PS1="$PS1_BASE$PS1_PROMPT"
 
 # aliases =====================================================================
 
-alias ls=exa
 alias gco="git checkout"
 # Assumes that git-completion.bash has been sourced 
 # https://git-scm.com/book/en/v1/Git-Basics-Tips-and-Tricks.
