@@ -4,9 +4,9 @@
 Minimal tmux configuration.
 
 ### Install
-Create an alias to dotfiles in home directory
+Create a symbolic link in your `$HOME` directory
 ```sh
-$ ln -s path/to/dotfiles/tmux.conf $HOME/.tmux.conf
+$ ln -s tmux.conf $HOME/.tmux.conf
 ```
 
 ## `bashrc_common`
@@ -14,11 +14,11 @@ $ ln -s path/to/dotfiles/tmux.conf $HOME/.tmux.conf
 Machine specific configuration should be in a regular `.bashrc` file which isn't stored in git.
 
 ### Install
-Create an alias to dotfiles in home directory
+Create a symbolic link in your `$HOME` directory
 ```sh
-$ ln -s path/to/dotfiles/.bashrc_common $HOME/.bashrc_common
+$ ln -s bashrc_common $HOME/.bashrc_common
 ```
-Append the following to any existing `.bashrc` file to source this one
+Append the following to any existing `.bashrc` file to source `bashrc_common`
 ```bash
 # source common bashrc from https://github.com/AaronStGeorge/dotfiles
 if [ -f $HOME/.bashrc_common ]; then
