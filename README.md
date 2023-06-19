@@ -18,7 +18,7 @@ Create a symbolic link in your `$HOME` directory
 ```sh
 $ ln -s bashrc_common $HOME/.bashrc_common
 ```
-Append the following to machine specific `.bashrc` file to source `bashrc_common`
+To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file
 ```bash
 # source common bashrc from https://github.com/AaronStGeorge/dotfiles
 if [ -f $HOME/.bashrc_common ]; then
