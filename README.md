@@ -21,7 +21,7 @@ $ ln -s bashrc_common $HOME/.bashrc_common
 To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file
 ```bash
 # source common bashrc from https://github.com/AaronStGeorge/dotfiles
-if [ -f $HOME/.bashrc_common ]; then
+if [[ -f $HOME/.bashrc_common ]]; then
   source $HOME/.bashrc_common
 fi
 ```
