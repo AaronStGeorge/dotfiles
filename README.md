@@ -16,7 +16,7 @@ Machine specific configuration should be in a regular `.bashrc` file not stored 
 ### Install
 Create a symbolic link in your `$HOME` directory
 ```sh
-$ ln -s bashrc_common $HOME/.bashrc_common
+$ ln -s $PWD/bashrc_common $HOME/.bashrc_common
 ```
 To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file
 ```bash
