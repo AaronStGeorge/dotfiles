@@ -3,9 +3,9 @@
 # Assumes https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh is installed.
 
 if [[ -n "${WORK_APPROPRIATE_PS1-}" ]]; then
-	export PS1_PROMPT=" $ "
+	PS1_PROMPT=" $ "
 else
-	export PS1_PROMPT=" 🐑💨 "
+	PS1_PROMPT=" 🐑💨 "
 fi
 
 function prompt_command {
@@ -26,9 +26,11 @@ function prompt_command {
 	fi
 
 	if [[ $RET -eq 0 ]]; then
-		export PS1_BASE="\\w:\[\e[32m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
+		# display the git branch in red if last command failed
+		PS1_BASE="\\w:\[\e[32m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
 	else
-		export PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
+		# otherwise display in green
+		PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
 	fi
 
 	export PS1="${PYTHON_VENV_PROMPT}$PS1_BASE$PS1_PROMPT"
