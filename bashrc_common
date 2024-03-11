@@ -9,7 +9,7 @@ else
 fi
 
 function prompt_command {
-  RET=$?
+	RET=$?
 
 	PYTHON_VENV_PROMPT=""
 	# `:-` ensures that when expanding the parameters if VIRTUAL_ENV is unset the
