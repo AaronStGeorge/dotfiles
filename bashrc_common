@@ -2,22 +2,19 @@
 
 # Assumes https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh is installed.
 
-if [[ -n "${WORK_APPROPRIATE_PS1-}" ]]; then
-	PS1_PROMPT=" $ "
-else
-	PS1_PROMPT=" 🐑💨 "
-fi
-
 function prompt_command {
-	RET=$?
+	# Capture the return code before doing anything that will mess with it.
+	local RET=$?
 
+	# Display the git branch in red if last command failed otherwise display in
+	# green.
 	if [[ $RET -eq 0 ]]; then
-		# display the git branch in red if last command failed
-		PS1_BASE="\\w:\[\e[32m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
+		local COLOR="\[\e[32m\]"
+		PS1_BASE="\\w:\$(__git_ps1 ' (%s)')\[\e[m\]"
 	else
-		# otherwise display in green
-		PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
+		local COLOR="\[\e[31m\]"
 	fi
+	local PS1_BASE="\\w:$COLOR\$(__git_ps1 ' (%s)')\[\e[m\]"
 
 	# On linux VIRTUAL_ENV_PROMPT already includes parenthesis and spaces:
 	# `(.venv) `; on mac it doesn't:`.venv`. We strip stuff out out then add it
@@ -32,8 +29,15 @@ function prompt_command {
 		VENV="($VENV) "
 	fi
 
+	# You at work bro?
+	if [[ -n "${WORK_APPROPRIATE_PS1}" ]]; then
+		local PS1_PROMPT=" $ "
+	else
+		local PS1_PROMPT=" 🐑💨 "
+	fi
+
+	# Here's where the magic happens.
 	export PS1="$VENV$PS1_BASE$PS1_PROMPT"
-	true
 }
 export PROMPT_COMMAND=prompt_command
 
