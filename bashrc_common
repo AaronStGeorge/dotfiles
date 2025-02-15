@@ -19,15 +19,18 @@ function prompt_command {
 		PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
 	fi
 
-	# On linux VIRTUAL_ENV_PROMPT already includes parenthesis: `(.venv)`; on mac
-	# it doesn't:`.venv`. To ensure we get a reasonable prompt on either platform,
-	# we strip parenthesis out then add them back.
-	VENV="${VIRTUAL_ENV_PROMPT/(//}" # bash find + replace `${var/find/replace}`
-	VENV="${VENV/)//}"
+	# On linux VIRTUAL_ENV_PROMPT already includes parenthesis and spaces:
+	# `(.venv) `; on mac it doesn't:`.venv`. We strip stuff out out then add it
+	# back to ensure a consistent prompt on either platform.
+	#
+	# bash find + replace: `${var/find/replace}` (only replaces first occurrence).
+	local VENV="${VIRTUAL_ENV_PROMPT/\(/}" # remove `(`
+	local VENV="${VENV/)/}"                # remove `)`
+	local VENV="${VENV/ /}"                # remove ` `
+	# add `() ` back
 	if [[ -n ${VENV} ]]; then
 		VENV="($VENV) "
 	fi
-
 
 	export PS1="$VENV$PS1_BASE$PS1_PROMPT"
 	true
