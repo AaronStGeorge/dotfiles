@@ -11,20 +11,6 @@ fi
 function prompt_command {
 	RET=$?
 
-	PYTHON_VENV_PROMPT=""
-	# `:-` ensures that when expanding the parameters if VIRTUAL_ENV is unset the
-	# parameter expansion will default to empty string
-	if [[ -n ${VIRTUAL_ENV:-} ]]; then
-		# `##*/` removes the longest match of `*/` stripping everything up to and
-		# including the last slash (/). If set, VIRTUAL_ENV will be a path, the
-		# parameter expansion will be the last thing in this path.
-		# Examples:
-		#   "/foo/bar" -> "bar"
-		#   "/" -> ""
-		#   "/thing" -> "thing"
-		PYTHON_VENV_PROMPT="(${VIRTUAL_ENV##*/}) "
-	fi
-
 	if [[ $RET -eq 0 ]]; then
 		# display the git branch in red if last command failed
 		PS1_BASE="\\w:\[\e[32m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
@@ -33,7 +19,17 @@ function prompt_command {
 		PS1_BASE="\\w:\[\e[31m\]\$(__git_ps1 ' (%s)')\[\e[m\]"
 	fi
 
-	export PS1="${PYTHON_VENV_PROMPT}$PS1_BASE$PS1_PROMPT"
+	# On linux VIRTUAL_ENV_PROMPT already includes parenthesis: `(.venv)`; on mac
+	# it doesn't:`.venv`. To ensure we get a reasonable prompt on either platform,
+	# we strip parenthesis out then add them back.
+	VENV="${VIRTUAL_ENV_PROMPT/(//}" # bash find + replace `${var/find/replace}`
+	VENV="${VENV/)//}"
+	if [[ -n ${VENV} ]]; then
+		VENV="($VENV) "
+	fi
+
+
+	export PS1="$VENV$PS1_BASE$PS1_PROMPT"
 	true
 }
 export PROMPT_COMMAND=prompt_command
