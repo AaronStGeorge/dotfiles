@@ -6,7 +6,7 @@ Machine specific configuration should be in a regular `.bashrc` file not stored 
 
 
 ### Install
-Create a symbolic link in your `$HOME` directory
+Create a symbolic link in your `$HOME` directory by the command below the `dotfiles` directory.
 ```sh
 $ ln -s $PWD/bashrc_common $HOME/.bashrc_common
 ```
