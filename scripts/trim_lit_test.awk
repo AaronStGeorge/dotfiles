@@ -1,10 +1,10 @@
 #!/usr/bin/env -S awk -f
 
-# Little awk file to make life a little easier when dealing with large llvm lit
-# tests. This script cuts out everything from a file except the top level `//
-# RUN:` lines and anything between `//<TACO>` and `//</TACO>`.  This makes it
-# easier to run a smaller input through `mlir-opt` or a similar program, or
-# extract a smaller lit test from a larger one.
+# Little awk file to make life easier when dealing with large llvm lit tests.
+# This script slices out everything except the top level `// RUN:` lines and
+# anything between `//<TACO>` and `//</TACO>`. Cat through this script to
+# run a smaller input through `mlir-opt`, or extract a smaller lit test from 
+# a larger one.
 #
 # Example: `cat big.mlir | mlir-opt -split-input-file -some-pass`
 
