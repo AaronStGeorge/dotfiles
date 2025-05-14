@@ -6,19 +6,18 @@ Machine specific configuration should be in a regular `.bashrc` file not stored 
 
 
 ### Install
-Create a symbolic link in your `$HOME` directory by the command below the `dotfiles` directory.
+Create a symbolic link in your `$HOME` directory to the `dotfiles` directory by running the following *in* the dotfiles directory.
 ```sh
-$ ln -s $PWD/bashrc_common $HOME/.bashrc_common
+$ ln -s $PWD $HOME/.dotfiles
 ```
-To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file
+To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file.
 ```bash
 # source common bashrc from https://github.com/AaronStGeorge/dotfiles
-if [[ -f $HOME/.bashrc_common ]]; then
-  source $HOME/.bashrc_common
+if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
+  source $HOME/.dotfiles/bashrc_common
 fi
 ```
-Add scripts directory to `$PATH` by running the following, and copy pasting the
-result into your `.bashrc`.
-```sh
-$ echo "export PATH=\"$PWD/scripts:\$PATH\""
+Add the scripts to your `$PATH` by adding the following to your `.bashrc` file.
+```bash
+export PATH="$HOME/.dotfiles/scripts:$PATH"
 ```
