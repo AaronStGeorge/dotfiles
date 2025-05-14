@@ -17,3 +17,8 @@ if [[ -f $HOME/.bashrc_common ]]; then
   source $HOME/.bashrc_common
 fi
 ```
+Add scripts directory to `$PATH` by running the following, and copy pasting the
+result into your `.bashrc`.
+```sh
+$ echo "export PATH=\"$PWD/scripts:\$PATH\""
+```
