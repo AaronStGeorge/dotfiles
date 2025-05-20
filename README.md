@@ -17,7 +17,12 @@ if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
   source $HOME/.dotfiles/bashrc_common
 fi
 ```
-Add the scripts to your `$PATH` by adding the following to your `.bashrc` file.
+
+## `scripts`
+Random one off command line utilities.
+
+### Install
+Assuming you've installed `bashrc_common` using the directions above, install scripts by updating the `PATH` environment variable in your `.bashrc`.
 ```bash
 export PATH="$HOME/.dotfiles/scripts:$PATH"
 ```
