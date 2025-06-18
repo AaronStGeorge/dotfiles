@@ -12,9 +12,10 @@ $ ln -s $PWD $HOME/.dotfiles
 ```
 To load `bashrc_common`, append the following to your regular, machine specific, `.bashrc` file.
 ```bash
-# source common bashrc from https://github.com/AaronStGeorge/dotfiles
+# source common bashrc from https://github.com/AaronStGeorge/dotfiles ==========
 if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
-  source $HOME/.dotfiles/bashrc_common
+    # export WORK_APPROPRIATE_PS1=1
+    source $HOME/.dotfiles/bashrc_common
 fi
 ```
 
