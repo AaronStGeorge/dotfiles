@@ -1,7 +1,4 @@
 # prompt ======================================================================
-
-# Assumes https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh is installed.
-
 function prompt_command {
 	# Capture the return code before doing anything that will mess with it.
 	local RET=$?
@@ -42,7 +39,6 @@ function prompt_command {
 export PROMPT_COMMAND=prompt_command
 
 # aliases =====================================================================
-
 alias gco="git checkout"
 # Assumes that git-completion.bash has been sourced: https://stackoverflow.com/q/12399002
 # source: https://stackoverflow.com/questions/9869227/git-autocomplete-in-bash-aliases
