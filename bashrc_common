@@ -37,7 +37,11 @@ function prompt_command {
 	# Here's where the magic happens.
 	export PS1="$VENV$PS1_BASE$PS1_PROMPT"
 }
-export PROMPT_COMMAND=prompt_command
+# PROMPT_COMMAND is a list. Tools like direnv that hook into directory changes
+# will break if we replace it (i.e. PROMPT_COMMAND=prompt_command) rather than
+# append to it.
+# NOTE: ${VAR:+value} -> if VAR is set AND non-empty, substitute "value"
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}prompt_command"
 
 # aliases =====================================================================
 alias gco="git checkout"
