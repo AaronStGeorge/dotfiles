@@ -1,0 +1,107 @@
+#===------------------------------------------------------------------------===#
+# Basic dev container with user matching host for bind mount permissions.
+# Generated using dotfiles/scripts/contain_me.py
+#===------------------------------------------------------------------------===#
+FROM arm64v8/ubuntu:24.04
+
+# Set via .devcontainer/devcontainer.json build args
+ARG USER
+ARG UID
+ARG GID
+ARG WORKDIR
+
+# Install some generally useful packages.
+RUN apt-get update && apt-get install -y \
+    bash-completion \
+    build-essential \
+    curl \
+    git \
+    jq \
+    neovim \
+    openssh-client \
+    sudo
+
+# Create group for user matching that from host machine. Linux typically creates
+# a group for each user (MacOS puts all users in group 20 "staff"), this will
+# ensure that group matches up between host + container.
+#   -o          : Allow non-unique GID (in case there are conflicts between host
+#                 and container); given a single user dev container this is fine.
+#   -g ${GID}   : Use the same Group ID as the host user
+#   ${USER}     : Name the group after the user
+RUN groupadd -o -g ${GID} ${USER}
+
+# Create the user in container matching host
+#   -u ${UID}    : Use the same User ID as the host user
+#   -g ${USER}   : Put user in the group we just created
+#   -m           : Create a home directory (/home/<USER> on Linux)
+#   -s /bin/bash : Set bash as the default shell
+#   ${USER}      : The username
+RUN useradd -u ${UID} -g ${USER} -ms /bin/bash ${USER}
+
+# Add user we just created to sudoers, and allow user to run sudo without a
+# password. NOTE: we haven't set up a password, without NOPASSWD the user
+# wouldn't be able to run sudo.
+RUN usermod -aG sudo ${USER} && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}
+
+# This is a Dockerfile variable (used in RUN commands below); shell $HOME is
+# setup by Linux.
+ENV HOME=/home/${USER}
+
+# Switch to user for remaining setup.
+USER ${USER}
+
+# Suppress Ubuntu's "To run a command as administrator..." message.
+RUN touch ~/.sudo_as_admin_successful
+
+# Install Claude Code CLI (installs to ~/.local/bin).
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
+# Create .dotfiles symlink (target exists after volume mount).
+RUN ln -s $HOME/Dev/misc/dotfiles $HOME/.dotfiles
+
+# Update .bashrc with common setup.
+RUN cat <<'EOF' >> $HOME/.bashrc
+
+# the ssh thing https://stackoverflow.com/a/18915067 ===========================
+SSH_ENV="$HOME/.ssh-agent-env"
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent >"$SSH_ENV"
+    echo succeeded
+    chmod 600 "$SSH_ENV"
+    source "$SSH_ENV" >/dev/null
+    /usr/bin/ssh-add
+}
+
+# Has the agent ever been started?
+if [[ -f "$SSH_ENV" ]]; then
+    source "$SSH_ENV" >/dev/null
+    # Is it running now?
+    if ! ps -p $SSH_AGENT_PID &>/dev/null; then
+        start_agent
+    fi
+else
+    start_agent
+fi
+
+# add stuff to path ============================================================
+# claude code
+export PATH="$HOME/.local/bin:$PATH"
+# dotfiles scripts
+export PATH="$HOME/.dotfiles/scripts:$PATH"
+
+# source common bashrc from https://github.com/AaronStGeorge/dotfiles ==========
+# Setup bash-completion
+source /etc/profile.d/bash_completion.sh
+# Eagerly load git completions (bash-completion API). Normally loads on first
+# `git <tab>`, but bashrc_common needs __git_complete for aliases.
+__load_completion git
+if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
+    source $HOME/.dotfiles/bashrc_common
+fi
+
+EOF
+
+WORKDIR ${WORKDIR}
