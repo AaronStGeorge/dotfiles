@@ -265,6 +265,7 @@ def main():
     print(f"  User: {user} (uid={uid}, gid={gid})")
     print(f"  Mount: {args.mount} -> {container_mount}")
     print(f"  Folder: {args.folder} -> {container_folder}")
+    print(f"  ROCm Support: {bool(rocm)}")
 
 
 if __name__ == "__main__":
