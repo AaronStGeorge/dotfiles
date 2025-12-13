@@ -11,12 +11,10 @@
   },
   "workspaceFolder": "{{folder}}",
   "workspaceMount": "source={{hostMount}},target={{containerMount}},type=bind",
-  "runArgs": ["--name", "{{name}}-container"],
+  "runArgs": ["--name", "{{name}}-container"{{#rocm}}, {{rocmRunArgs}}{{/rocm}}],
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/{{user}}/.ssh,type=bind,readonly",
-    "source=${localEnv:HOME}/.claude/CLAUDE.md,target=/home/{{user}}/.claude/CLAUDE.md,type=bind",
     "source=${localEnv:HOME}/.gitconfig,target=/home/{{user}}/.gitconfig,type=bind",
     "source=${localEnv:HOME}/.config/git,target=/home/{{user}}/.config/git,type=bind",
-    "source=${localEnv:HOME}/Dev/misc/dotfiles,target=/home/{{user}}/Dev/misc/dotfiles,type=bind"
   ]
 }

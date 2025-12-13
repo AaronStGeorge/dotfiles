@@ -69,6 +69,45 @@ def apply_template(template: str, items: dict) -> str:
 
 
 # =============================================================================
+# ROCm device detection
+# =============================================================================
+
+# ROCm requires access to the host's /dev/kfd (Kernel Fusion Driver, AMD's GPU
+# compute interface) and /dev/dri/* (Direct Rendering Infrastructure) device
+# nodes. Since the container uses the GPU drivers on the host, the container
+# user must belong to the same GIDs that own these devices on the host.
+#
+# We query the owning GID of each device directly. It should be the groups
+# 'render' and 'video' respectively, but if there's some odd configuration it
+# might not be. If instead one looked up the GID of named groups you would
+# almost always get the same result.
+
+def detect_rocm_devices() -> tuple[list[str], set[int]] | None:
+    """
+    Detect ROCm devices and their owning GIDs.
+
+    Returns:
+        (devices, gids) tuple if ROCm available, None otherwise
+        - devices: ["/dev/kfd", "/dev/dri/card0", "/dev/dri/renderD128", ...]
+        - gids: unique GIDs that own these devices
+    """
+    kfd = Path("/dev/kfd")
+    if not kfd.exists():
+        return None
+
+    devices = [str(kfd)]
+    gids = {kfd.stat().st_gid}
+
+    dri_dir = Path("/dev/dri")
+    if dri_dir.exists():
+        for dev in sorted(dri_dir.iterdir()):
+            devices.append(str(dev))
+            gids.add(dev.stat().st_gid)
+
+    return devices, gids
+
+
+# =============================================================================
 # Machine values
 # =============================================================================
 
@@ -90,7 +129,7 @@ def get_gid() -> str:
 # Path utilities
 # =============================================================================
 
-def host_to_container_path(host_path: str, user: str) -> tuple[str, str]:
+def host_to_container_path(host_path: str, user: str) -> str:
     """
     Convert host path to container path.
 
@@ -99,7 +138,7 @@ def host_to_container_path(host_path: str, user: str) -> tuple[str, str]:
         user: ralph5
 
     Returns:
-        (suffix, container_path) - e.g., ("/Dev", "/home/ralph5/Dev")
+        container_path - e.g., "/home/ralph5/Dev"
     """
     home = os.environ.get("HOME", "")
     if not host_path.startswith(home):
@@ -109,7 +148,7 @@ def host_to_container_path(host_path: str, user: str) -> tuple[str, str]:
 
     suffix = host_path[len(home):]
     container_path = f"/home/{user}{suffix}"
-    return suffix, container_path
+    return container_path
 
 
 def compute_dockerfile_path(devcontainer_dir: Path, dockerfile_dir: Path) -> str:
@@ -159,8 +198,8 @@ def main():
     gid = get_gid()
 
     # Convert host paths to container paths
-    mount_suffix, container_mount = host_to_container_path(args.mount, user)
-    folder_suffix, container_folder = host_to_container_path(args.folder, user)
+    container_mount = host_to_container_path(args.mount, user)
+    container_folder = host_to_container_path(args.folder, user)
 
     # Compute paths
     devcontainer_dir = Path.cwd() / ".devcontainer" / args.name
@@ -193,6 +232,15 @@ def main():
         "gid": gid,
         "dockerfilePath": dockerfile_path,
     }
+
+    # Add ROCm device passthrough if available
+    rocm = detect_rocm_devices()
+    if rocm:
+        devices, gids = rocm
+        device_args = [f'"--device={dev}"' for dev in devices]
+        group_args = [f'"--group-add={gid}"' for gid in sorted(gids)]
+        items["rocm"] = True
+        items["rocmRunArgs"] = ", ".join(device_args + group_args)
 
     # Apply templates
     devcontainer_output = apply_template(devcontainer_template, items)
