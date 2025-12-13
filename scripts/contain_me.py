@@ -101,8 +101,13 @@ def detect_rocm_devices() -> tuple[list[str], set[int]] | None:
     dri_dir = Path("/dev/dri")
     if dri_dir.exists():
         for dev in sorted(dri_dir.iterdir()):
-            devices.append(str(dev))
-            gids.add(dev.stat().st_gid)
+            # /dev/dri may contain subdirectories like 'by-path' that should be
+            # filtered out.  We only need to expose files that are actually
+            # device drivers masquerading as files. Specifically character
+            # device drivers, block drivers are for storage I/O.
+            if dev.is_char_device():
+                devices.append(str(dev))
+                gids.add(dev.stat().st_gid)
 
     return devices, gids
 
