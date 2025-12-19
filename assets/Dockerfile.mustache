@@ -100,6 +100,7 @@ source /etc/profile.d/bash_completion.sh
 # `git <tab>`, but bashrc_common needs __git_complete for aliases.
 __load_completion git
 if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
+    export WORK_APPROPRIATE_PS1=1
     source $HOME/.dotfiles/bashrc_common
 fi
 

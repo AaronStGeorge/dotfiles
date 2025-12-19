@@ -7,7 +7,6 @@ function prompt_command {
 	# green.
 	if [[ $RET -eq 0 ]]; then
 		local COLOR="\[\e[32m\]"
-		PS1_BASE="\\w:\$(__git_ps1 ' (%s)')\[\e[m\]"
 	else
 		local COLOR="\[\e[31m\]"
 	fi
