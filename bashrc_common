@@ -50,3 +50,4 @@ __git_complete gco _git_checkout
 alias goc="git checkout"
 __git_complete goc _git_checkout
 alias gs="git status"
+alias sharpclaude="CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=Y claude --dangerously-skip-permissions"
