@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     cmake-curses-gui \
     curl \
+    direnv \
     git \
     htop \
     jq \
@@ -267,4 +268,9 @@ if [[ -f $HOME/.dotfiles/bashrc_common ]]; then
     export WORK_APPROPRIATE_PS1=1
     source $HOME/.dotfiles/bashrc_common
 fi
+
+# direnv ======================================================================
+# Hooked last so direnv wraps the final PROMPT_COMMAND (it must run after
+# anything that modifies the prompt, per direnv's docs).
+eval "$(direnv hook bash)"
 EOF
