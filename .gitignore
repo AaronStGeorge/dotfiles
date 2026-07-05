@@ -1,2 +1,11 @@
 # mac stuff
 .DS_Store
+
+# python bytecode cache (scripts/mustache.py is imported by mkdevcontainer)
+__pycache__/
+
+# corporate root CAs staged for dev container builds — host/network specific
+dockerfiles/*/certs/*.crt
+
+# generated if mkdevcontainer is run from inside this repo
+.devcontainer/

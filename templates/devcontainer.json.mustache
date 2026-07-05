@@ -1,0 +1,55 @@
+{
+  "name": "{{containerName}}",
+  "build": {
+    "dockerfile": "{{dockerfilePath}}",
+    "args": {
+      "USER": "{{user}}",
+      "UID": "{{uid}}",
+      "GID": "{{gid}}",
+      "DOTFILES_DIR": "{{dotfilesDir}}"
+    }
+  },
+  // ${localWorkspaceFolder} is a VS Code devcontainer-spec variable, NOT a
+  // mustache placeholder — it resolves at session start to whichever folder
+  // the user opened. Combined with the Dev/ bind-mount below, the container
+  // opens at the same path inside, so one devcontainer.json serves any
+  // folder under Dev/.
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "workspaceMount": "source={{hostMount}},target={{containerMount}},type=bind",
+  // Run this trusted single-user dev container in Docker privileged mode so
+  // agent sandboxes can create the nested namespaces they need. Earlier versions
+  // listed individual apparmor/seccomp/systempaths/cap-add flags here, but
+  // privileged=true supersedes those Docker-side security bypasses and avoids
+  // rediscovering another missing capability each time bwrap reaches a new
+  // kernel path. This is intentionally not suitable for multi-tenant or
+  // production containers.
+  "privileged": true,
+  "runArgs": ["--name", "{{containerName}}"{{#rocm}}, {{rocmRunArgs}}{{/rocm}}],
+  "mounts": [
+{{#mountClaude}}
+    "source=${localEnv:HOME}/.claude,target=/home/{{user}}/.claude,type=bind",
+{{/mountClaude}}
+{{#mountCodex}}
+    "source=${localEnv:HOME}/.codex,target=/home/{{user}}/.codex,type=bind",
+{{/mountCodex}}
+    "source=${localEnv:HOME}/.ssh,target=/home/{{user}}/.ssh,type=bind,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/{{user}}/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/.config/git,target=/home/{{user}}/.config/git,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Anthropic.claude-code",
+        "openai.chatgpt",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-python.black-formatter",
+        "ms-python.python",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}

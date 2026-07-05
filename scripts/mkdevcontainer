@@ -1,0 +1,287 @@
+#!/usr/bin/env python3
+"""
+Generate a .devcontainer/<name>/devcontainer.json in the current directory.
+
+Each entry under ``~/.dotfiles/dockerfiles/<name>/`` is a generic container
+template. The generated devcontainer bind-mounts the whole host ``Dev/`` tree
+and opens at the invocation directory (via VS Code's ``${localWorkspaceFolder}``
+substitution), so it can be generated in any folder under ``Dev/``. Agent
+configs (~/.claude, ~/.codex) are bind-mounted by default.
+
+Usage:
+    mkdevcontainer ubuntu2404
+    mkdevcontainer ubuntu2404 --no-agent-configs
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+import mustache
+
+
+# =============================================================================
+# ROCm device detection
+# =============================================================================
+
+# ROCm requires access to the host's /dev/kfd (Kernel Fusion Driver, AMD's GPU
+# compute interface) and /dev/dri/* (Direct Rendering Infrastructure) device
+# nodes. Since the container uses the GPU drivers on the host, the container
+# user must belong to the same GIDs that own these devices on the host.
+#
+# We query the owning GID of each device directly. It should be the groups
+# 'render' and 'video' respectively, but if there's some odd configuration it
+# might not be. If instead one looked up the GID of named groups you would
+# almost always get the same result.
+#
+# These GIDs are passed to Docker via --group-add flags in devcontainer.json.
+# Docker's --group-add adds supplementary GIDs to the container process at
+# runtime, independent of what groups the user belongs to in /etc/group inside
+# the container.
+
+
+def detect_rocm_devices() -> tuple[list[str], set[int]] | None:
+    """
+    Detect ROCm devices and their owning GIDs.
+
+    Returns:
+        (devices, gids) tuple if ROCm available, None otherwise
+        - devices: ["/dev/kfd", "/dev/dri/card0", "/dev/dri/renderD128", ...]
+        - gids: unique GIDs that own these devices
+    """
+    kfd = Path("/dev/kfd")
+    if not kfd.exists():
+        return None
+
+    devices = [str(kfd)]
+    gids = {kfd.stat().st_gid}
+
+    dri_dir = Path("/dev/dri")
+    if dri_dir.exists():
+        for dev in sorted(dri_dir.iterdir()):
+            # /dev/dri may contain subdirectories like 'by-path' that should be
+            # filtered out. We only need to expose files that are actually
+            # device drivers masquerading as files. Specifically character
+            # device drivers, block drivers are for storage I/O.
+            if dev.is_char_device():
+                devices.append(str(dev))
+                gids.add(dev.stat().st_gid)
+
+    return devices, gids
+
+
+# =============================================================================
+# Machine values
+# =============================================================================
+
+
+def get_user() -> str:
+    return os.environ.get("USER") or subprocess.run(
+        ["id", "-un"], capture_output=True, text=True
+    ).stdout.strip()
+
+
+def get_uid() -> str:
+    return subprocess.run(["id", "-u"], capture_output=True, text=True).stdout.strip()
+
+
+def get_gid() -> str:
+    return subprocess.run(["id", "-g"], capture_output=True, text=True).stdout.strip()
+
+
+# =============================================================================
+# Path utilities
+# =============================================================================
+
+
+def find_dev_dir(cwd: Path) -> Path:
+    """Find the Dev directory: cwd itself or the nearest ancestor named 'Dev'."""
+    for candidate in (cwd, *cwd.parents):
+        if candidate.name == "Dev":
+            return candidate
+    print(
+        f"Error: {cwd} is not inside a 'Dev' directory. "
+        "Run from a folder under ~/Dev.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
+def container_name_slug(cwd: Path, dev_dir: Path) -> str:
+    """Derive a Docker-safe container name component from cwd's path under Dev."""
+    if cwd == dev_dir:
+        return "dev"
+    rel = str(cwd.relative_to(dev_dir)).replace("/", "-")
+    return re.sub(r"[^a-zA-Z0-9_.-]", "-", rel)
+
+
+def host_to_container_path(host_path: str, user: str) -> str:
+    """
+    Convert host path to container path.
+
+    Args:
+        host_path: Path host (e.g., on MacOS something like /Users/ralph5/Dev)
+        user: ralph5
+
+    Returns:
+        container_path - e.g., linux path "/home/ralph5/Dev"
+    """
+    home = os.environ.get("HOME", "")
+    if not host_path.startswith(home):
+        raise ValueError(f"Path must start with $HOME ({home}), got: {host_path}")
+
+    suffix = host_path[len(home) :]
+    container_path = f"/home/{user}{suffix}"
+    return container_path
+
+
+def compute_dockerfile_path(devcontainer_dir: Path, dockerfile_dir: Path) -> str:
+    """Compute relative path from devcontainer.json to Dockerfile."""
+    devcontainer_dir = devcontainer_dir.resolve()
+    dockerfile_dir = dockerfile_dir.resolve()
+
+    rel_path = os.path.relpath(dockerfile_dir, devcontainer_dir)
+    return os.path.join(rel_path, "Dockerfile")
+
+
+# =============================================================================
+# Devcontainer generation
+# =============================================================================
+
+
+def generate_devcontainer(
+    name: str,
+    dockerfile_dir: Path,
+    template_file: Path,
+    cwd: Path,
+    *,
+    mount_agent_configs: bool = True,
+):
+    """Generate .devcontainer/<name>/devcontainer.json in ``cwd``.
+
+    ``workspaceFolder`` is the VS Code substitution variable
+    ``${localWorkspaceFolder}``, so the container opens at whichever folder
+    under ``Dev/`` the user reopened.
+    """
+    dev_dir = find_dev_dir(cwd)
+    user = get_user()
+    uid = get_uid()
+    gid = get_gid()
+
+    host_mount = str(dev_dir)
+    try:
+        container_mount = host_to_container_path(host_mount, user)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    devcontainer_dir = cwd / ".devcontainer" / name
+    dockerfile_path = compute_dockerfile_path(devcontainer_dir, dockerfile_dir)
+
+    # Container-side path of the dotfiles repo (this script's repo), passed to
+    # the Dockerfile so the in-container ~/.dotfiles symlink points at the
+    # bind-mounted checkout wherever it actually lives under Dev/.
+    dotfiles_dir = host_to_container_path(
+        str(Path(__file__).resolve().parent.parent), user
+    )
+
+    template = template_file.read_text()
+
+    items = {
+        "containerName": f"{container_name_slug(cwd, dev_dir)}-{name}",
+        "hostMount": host_mount,
+        "containerMount": container_mount,
+        "user": user,
+        "uid": uid,
+        "gid": gid,
+        "dockerfilePath": dockerfile_path,
+        "dotfilesDir": dotfiles_dir,
+    }
+
+    rocm = detect_rocm_devices()
+    if rocm:
+        devices, gids = rocm
+        device_args = [f'"--device={dev}"' for dev in devices]
+        group_args = [f'"--group-add={gid}"' for gid in sorted(gids)]
+        items["rocm"] = True
+        items["rocmRunArgs"] = ", ".join(device_args + group_args)
+
+    # Pre-create agent config dirs (user-owned) for the bind mounts in the
+    # mustache. If Docker auto-creates a bind source it is root-owned and the
+    # agent couldn't write its config.
+    mounted_agent_configs = []
+    if mount_agent_configs:
+        for dirname, key in ((".claude", "mountClaude"), (".codex", "mountCodex")):
+            config_dir = Path.home() / dirname
+            if not config_dir.exists():
+                config_dir.mkdir()
+                print(f"  Created {config_dir}")
+            items[key] = True
+            mounted_agent_configs.append(str(config_dir))
+
+    output = mustache.apply_template(template, items)
+    devcontainer_dir.mkdir(parents=True, exist_ok=True)
+    devcontainer_file = devcontainer_dir / "devcontainer.json"
+    devcontainer_file.write_text(output)
+
+    print(f"Generated {devcontainer_file}")
+    print(f"  Container name: {items['containerName']}")
+    print(f"  Dockerfile: {dockerfile_dir / 'Dockerfile'}")
+    print(f"  User: {user} (uid={uid}, gid={gid})")
+    print(f"  Mount: {host_mount} -> {container_mount}")
+    print(f"  ROCm: {bool(rocm)}")
+    if mounted_agent_configs:
+        print(f"  Agent configs: {', '.join(mounted_agent_configs)}")
+
+
+# =============================================================================
+# Main
+# =============================================================================
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate .devcontainer/<name>/devcontainer.json in the "
+        "current directory from a generic container template."
+    )
+    parser.add_argument(
+        "name",
+        help="Container template under ~/.dotfiles/dockerfiles/ (e.g., ubuntu2404)",
+    )
+    parser.add_argument(
+        "--no-agent-configs",
+        action="store_false",
+        dest="mount_agent_configs",
+        help="Don't mount ~/.claude and ~/.codex into the container "
+        "(they are mounted by default; trusted single-user machines only)",
+    )
+
+    args = parser.parse_args()
+    dotfiles_dir = Path(__file__).resolve().parent.parent
+    dockerfile_dir = dotfiles_dir / "dockerfiles" / args.name
+
+    if not (dockerfile_dir / "Dockerfile").exists():
+        available = sorted(
+            p.parent.name for p in dotfiles_dir.glob("dockerfiles/*/Dockerfile")
+        )
+        print(
+            f"Error: No Dockerfile found at {dockerfile_dir / 'Dockerfile'}\n"
+            f"Available templates: {', '.join(available) or '(none)'}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    generate_devcontainer(
+        args.name,
+        dockerfile_dir,
+        dotfiles_dir / "templates" / "devcontainer.json.mustache",
+        Path.cwd(),
+        mount_agent_configs=args.mount_agent_configs,
+    )
+
+
+if __name__ == "__main__":
+    main()
