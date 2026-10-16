@@ -32,8 +32,6 @@ RUN apt-get update && apt-get install -y \
     lld \
     neovim \
     ninja-build \
-    nodejs \
-    npm \
     openssh-client \
     python3 \
     python3-dev \
@@ -189,6 +187,13 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     && sudo apt update \
 	&& sudo apt install gh -y
 
+# Install Node.js LTS from NodeSource. Ubuntu 24.04's apt `nodejs` is 18.x,
+# which is EOL and too old for current npm tooling (e.g. `npx skills` needs
+# >=22.20). The NodeSource package bundles npm.
+ARG NODE_MAJOR=22
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
+    && apt-get install -y nodejs
+
 # Install Go
 ARG GO_VERSION=1.26.2
 RUN wget -nv -O /tmp/go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
@@ -241,8 +246,14 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 # Install Codex CLI (installs to ~/.local/bin to avoid root-owned /usr prefix).
 RUN npm config set prefix ~/.local && npm i -g @openai/codex
 
+# Install Rust via rustup (installs to ~/.cargo and ~/.rustup, owned by the dev
+# user so `rustup update` / `cargo install` work without sudo). --no-modify-path
+# keeps rustup from editing .bashrc; ~/.cargo/env is sourced explicitly below.
+RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile default
+
 # Create .dotfiles symlink (target exists after volume mount).
 RUN ln -s ${DOTFILES_DIR} $HOME/.dotfiles
+RUN ln -s $HOME/.dotfiles/tmux.conf $HOME/.tmux.conf
 
 # Update .bashrc with common setup.
 RUN cat <<'EOF' >> $HOME/.bashrc
@@ -257,6 +268,8 @@ alias codex='codex --sandbox workspace-write'
 export PATH="$HOME/.dotfiles/scripts:$PATH"
 # go
 export PATH="/usr/local/go/bin:$PATH"
+# rust
+. "$HOME/.cargo/env"
 
 # source common bashrc from https://github.com/AaronStGeorge/dotfiles ==========
 # Setup bash-completion
