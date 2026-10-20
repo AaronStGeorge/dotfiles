@@ -251,6 +251,20 @@ RUN npm config set prefix ~/.local && npm i -g @openai/codex
 # keeps rustup from editing .bashrc; ~/.cargo/env is sourced explicitly below.
 RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile default
 
+# Install beads_rust (`br`), the Rust port of the Beads issue tracker for
+# coding agents (https://github.com/Dicklesworthstone/beads_rust). The install
+# script downloads a prebuilt release binary (checksum-verified) into
+# ~/.local/bin, falling back to a cargo build from source if no release
+# matches the platform. --skip-skills: the installer also drops agent skills
+# into ~/.claude/skills and ~/.codex/skills, but those dirs are bind-mounted
+# from the host by default (see mkdevcontainer), so anything written there at
+# build time would be shadowed. ~/.cargo/bin is put on PATH for this step so
+# the source-build fallback finds the rustup toolchain installed above instead
+# of installing a second one.
+RUN PATH="$HOME/.cargo/bin:$PATH" \
+    && curl -fsSL https://raw.githubusercontent.com/Dicklesworthstone/beads_rust/main/install.sh \
+    | bash -s -- --skip-skills
+
 # Create .dotfiles symlink (target exists after volume mount).
 RUN ln -s ${DOTFILES_DIR} $HOME/.dotfiles
 RUN ln -s $HOME/.dotfiles/tmux.conf $HOME/.tmux.conf
