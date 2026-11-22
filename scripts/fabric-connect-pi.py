@@ -71,8 +71,8 @@ def main():
     try:
         result = subprocess.run(
             [
-                "fabric", "connect", args.agent_name, "--harness", "pi",
-                "--expires", "90d", "--provider", "openai", "--model", MODEL,
+		"fabric", "connect", args.agent_name, "--harness", "pi", "--owner", "aaron",
+		"--expires", "90d", "--provider", "openai", "--model", MODEL,
             ],
             env=env,
         )
