@@ -24,6 +24,9 @@
   // kernel path. This is intentionally not suitable for multi-tenant or
   // production containers.
   "privileged": true,
+  // This sysctl is host-wide, not namespaced: apply after startup rather than
+  // using Docker --sysctl (which only accepts namespaced settings).
+  "postStartCommand": ["sudo", "sysctl", "-w", "kernel.perf_event_paranoid=-1"],
   "runArgs": ["--name", "{{containerName}}"{{#rocm}}, {{rocmRunArgs}}{{/rocm}}],
   "mounts": [
 {{#mountClaude}}

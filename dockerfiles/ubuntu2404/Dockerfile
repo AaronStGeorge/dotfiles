@@ -29,10 +29,12 @@ RUN apt-get update && apt-get install -y \
     git \
     htop \
     jq \
+    linux-tools-generic \
     lld \
     neovim \
     ninja-build \
     openssh-client \
+    procps \
     python3 \
     python3-dev \
     python3-venv \
@@ -41,6 +43,14 @@ RUN apt-get update && apt-get install -y \
     tmux \
     uidmap \
     wget
+
+# Ubuntu's /usr/bin/perf wrapper requires tools matching the running kernel.
+# Containers share the host kernel, which may not be an Ubuntu kernel. Expose
+# the packaged binary directly instead; check that it starts during the build.
+RUN perf_binary=$(find /usr/lib/linux-tools -type f -name perf | sort -V | tail -n 1) \
+    && test -n "$perf_binary" \
+    && ln -s "$perf_binary" /usr/local/bin/perf \
+    && perf --version
 
 # Give bubblewrap a narrowly-scoped privileged entry point for agent sandboxes.
 #
@@ -245,6 +255,13 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install Codex CLI (installs to ~/.local/bin to avoid root-owned /usr prefix).
 RUN npm config set prefix ~/.local && npm i -g @openai/codex
+
+# Global default for containers without a host ~/.codex bind mount. With the
+# default bind mount, the host's ~/.codex/config.toml supplies these settings.
+RUN mkdir -p "$HOME/.codex" \
+    && printf '%s\n' 'approval_policy = "on-request"' \
+        'approvals_reviewer = "auto_review"' 'sandbox_mode = "workspace-write"' \
+        > "$HOME/.codex/config.toml"
 
 # Install Rust via rustup (installs to ~/.cargo and ~/.rustup, owned by the dev
 # user so `rustup update` / `cargo install` work without sudo). --no-modify-path
