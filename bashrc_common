@@ -10,7 +10,7 @@ function prompt_command {
 	else
 		local COLOR="\[\e[31m\]"
 	fi
-	local PS1_BASE="\\w:$COLOR\$(__git_ps1 ' (%s)')\[\e[m\]"
+	local PS1_BASE="[\\h] \\w:$COLOR\$(__git_ps1 ' (%s)')\[\e[m\]"
 
 	# On linux VIRTUAL_ENV_PROMPT already includes parenthesis and spaces
 	# e.g. `(.venv) `; on mac it doesn't e.g. `.venv`. We strip stuff out
